@@ -1,0 +1,1 @@
+GameVerseEngine.register({id:"fruit-slice",type:"arcade",accent:"#ff4fa3",colors:["#ff4fa3","#76f7c7","#ffbd5c","#8b7cff"],controls:"Tap or click fruit before it drops. Every clean slice adds 10 points."});

@@ -1,0 +1,1 @@
+GameVerseEngine.register({id:"car-racing",type:"racing",accent:"#dc5cff",controls:"Tap a lane or use Left and Right arrows to hold the fastest clean line."});

@@ -1,0 +1,1 @@
+GameVerseEngine.register({id:"sudoku",type:"sudoku",accent:"#8a7dff",controls:"Select an empty square, then press a number from 1–9 on your keyboard."});

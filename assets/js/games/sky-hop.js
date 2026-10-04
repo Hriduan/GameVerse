@@ -1,0 +1,1 @@
+GameVerseEngine.register({id:"sky-hop",type:"flyer",accent:"#59dcff",controls:"Tap, click or press Space to boost upward. Pass each gate to score."});
