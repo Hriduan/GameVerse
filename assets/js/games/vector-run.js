@@ -1,0 +1,1 @@
+GameVerseEngine.register({id:"vector-run",type:"runner",accent:"#71f6d2",controls:"Tap, click or press Space to jump over each obstacle."});

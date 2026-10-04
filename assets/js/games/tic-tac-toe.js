@@ -1,0 +1,1 @@
+GameVerseEngine.register({id:"tic-tac-toe",type:"grid",accent:"#f35dcc",controls:"Tap or click an empty square. You are X; the GameVerse CPU is O."});

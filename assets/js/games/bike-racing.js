@@ -1,0 +1,1 @@
+GameVerseEngine.register({id:"bike-racing",type:"racing",accent:"#4ce4ef",controls:"Tap a lane or use Left and Right arrows to dodge traffic."});
