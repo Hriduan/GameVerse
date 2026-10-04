@@ -1,0 +1,1 @@
+GameVerseEngine.register({id:"archery",type:"target",accent:"#ffb84d",controls:"Tap or click the moving target. Hits closer to the center score more."});

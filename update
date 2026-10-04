@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Target repository URL for GameVerse
+REPO_URL="https://github.com/Hriduan/GameVerse.git"
+
+# 1. Initialize Git and set main branch
+if [ ! -d ".git" ]; then
+    git init
+fi
+git branch -M main
+
+# 2. Configure the remote repository URL safely
+if git remote | grep -q "^origin$"; then
+    git remote set-url origin "$REPO_URL"
+else
+    git remote add origin "$REPO_URL"
+fi
+
+# 3. Tell Git to remember your username and password permanently
+git config credential.helper store
+
+# 4. Stage all additions, updates, and deletions
+git add --all
+
+# 5. Fetch existing tags to ensure accurate version calculation
+git fetch origin --tags 2>/dev/null
+
+# 6. Determine the highest existing version tag
+latest_tag=$(git tag -l "v*" | sort -V | tail -n 1)
+
+# 7. Dynamically increment the version sequence
+if [ -z "$latest_tag" ]; then
+    new_tag="v1.0"
+else
+    # Extract major and minor version numbers
+    major=$(echo "$latest_tag" | sed 's/v//' | cut -d. -f1)
+    minor=$(echo "$latest_tag" | cut -d. -f2)
+
+    # Increment minor version (v1.0 -> v1.1 -> v1.2)
+    new_minor=$((minor + 1))
+    new_tag="v${major}.${new_minor}"
+fi
+
+echo "🚀 Preparing GameVerse update: $new_tag"
+
+# 8. Commit changes
+if git diff-index --quiet HEAD 2>/dev/null; then
+    git commit --allow-empty -m "$new_tag"
+else
+    git commit -m "$new_tag"
+fi
+
+# 9. Create the tag locally
+git tag -f "$new_tag"
+
+# 10. Force push both the files and the tags to GitHub in a SINGLE step
+echo "📤 Uploading to GitHub..."
+git push origin main --tags --force
+
+echo "✅ Success! GameVerse repository updated as $new_tag"
