@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Target repository URL for GameVerse
+# Target repository URL
 REPO_URL="https://github.com/Hriduan/GameVerse.git"
 
 # 1. Initialize Git and set main branch
@@ -28,20 +28,38 @@ git fetch origin --tags 2>/dev/null
 # 6. Determine the highest existing version tag
 latest_tag=$(git tag -l "v*" | sort -V | tail -n 1)
 
-# 7. Dynamically increment the version sequence
+# 7. Dynamically calculate the custom rollover version sequence
 if [ -z "$latest_tag" ]; then
-    new_tag="v1.0"
+    new_tag="v1.0.0"
 else
-    # Extract major and minor version numbers
-    major=$(echo "$latest_tag" | sed 's/v//' | cut -d. -f1)
-    minor=$(echo "$latest_tag" | cut -d. -f2)
+    # Remove the 'v' and split into X, Y, Z variables
+    version="${latest_tag#v}"
+    major=$(echo "$version" | cut -d. -f1)
+    minor=$(echo "$version" | cut -d. -f2)
+    patch=$(echo "$version" | cut -d. -f3)
 
-    # Increment minor version (v1.0 -> v1.1 -> v1.2)
-    new_minor=$((minor + 1))
-    new_tag="v${major}.${new_minor}"
+    # Default patch to 0 if an older tag format (like v1.0) was used
+    if [ -z "$patch" ]; then patch=0; fi
+
+    # Increment patch
+    patch=$((patch + 1))
+    
+    # Roll over patch to 0 and increment minor if patch hits 10
+    if [ $patch -gt 9 ]; then
+        patch=0
+        minor=$((minor + 1))
+    fi
+    
+    # Roll over minor to 0 and increment major if minor hits 10
+    if [ $minor -gt 9 ]; then
+        minor=0
+        major=$((major + 1))
+    fi
+
+    new_tag="v${major}.${minor}.${patch}"
 fi
 
-echo "🚀 Preparing GameVerse update: $new_tag"
+echo "🚀 Preparing GameVerse deployment batch: $new_tag"
 
 # 8. Commit changes
 if git diff-index --quiet HEAD 2>/dev/null; then
@@ -53,8 +71,8 @@ fi
 # 9. Create the tag locally
 git tag -f "$new_tag"
 
-# 10. Force push both the files and the tags to GitHub in a SINGLE step
+# 10. Force push files and tags to GitHub in a SINGLE step
 echo "📤 Uploading to GitHub..."
 git push origin main --tags --force
 
-echo "✅ Success! GameVerse repository updated as $new_tag"
+echo "✅ Success! GameVerse repository updated and synced as $new_tag"
